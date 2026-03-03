@@ -1,14 +1,21 @@
 import cv2
 
-def find_laser_time(video_path):
+def find_laser_time_with_rewind(video_path):
     cap = cv2.VideoCapture(video_path)
     
     print("--- CONTROLS ---")
     print("[Spacebar] : Pause or Play")
-    print("[ n ]      : Step forward exactly ONE frame (only works when paused)")
+    print("[ n ]      : Step FORWARD exactly ONE frame (when paused)")
+    print("[ b ]      : Step BACKWARD exactly ONE frame (when paused)")
     print("[ q ]      : Quit and close the window")
     
     paused = False
+
+    # Read the very first frame to start
+    ret, frame = cap.read()
+    if not ret:
+        print("Error reading video.")
+        return
 
     while cap.isOpened():
         if not paused:
@@ -19,6 +26,9 @@ def find_laser_time(video_path):
 
         # Read the exact hardware reality timestamp
         msec = cap.get(cv2.CAP_PROP_POS_MSEC)
+        
+        # We need the current frame number so we know where to jump back to
+        current_frame_idx = cap.get(cv2.CAP_PROP_POS_FRAMES)
 
         # Draw the timestamp on the screen so you can read it easily
         display_frame = frame.copy()
@@ -35,12 +45,20 @@ def find_laser_time(video_path):
             break
         elif key == ord(' '):  # Pause/Play
             paused = not paused
+            
         elif key == ord('n') and paused:  # Next Frame
             ret, frame = cap.read()
             if not ret: break
+            
+        elif key == ord('b') and paused:  # Back Frame
+            # To go back 1 frame visually, we move the internal pointer back by 2
+            # because the last read() pushed us forward by 1.
+            target_frame = max(0, current_frame_idx - 2)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
+            ret, frame = cap.read()
 
     cap.release()
     cv2.destroyAllWindows()
 
 # --- RUN IT ---
-find_laser_time("20240520-082227832807.webm")
+find_laser_time_with_rewind("20240520-082227832807.webm")
