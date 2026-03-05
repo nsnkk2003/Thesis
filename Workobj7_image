@@ -22,7 +22,11 @@ def extract_exact_reality_frames():
     print(f"Loading logs from {xlsx_path}...")
     df = pd.read_excel(xlsx_path)
     
-    # Clean the Excel timestamps to make them readable by Python
+    # --- PRESERVE THE RAW REALITY ---
+    # Save the exact, untouched string from the Excel cell before doing any math on it
+    df['Raw_Cell_Value'] = df['Time'].astype(str)
+    
+    # Clean the working column for our Python math (swaps the comma for a dot)
     df['Time'] = df['Time'].astype(str).str.replace(',', '.')
     df['Time'] = pd.to_datetime(df['Time'])
     
@@ -45,7 +49,7 @@ def extract_exact_reality_frames():
             continue
 
         print(f"\n--- Opening Video {i+1}: {os.path.basename(vid_path)} ---")
-        print(f"Found {len(vid_logs)} logs. Extracting unique frames from absolute zero...")
+        print(f"Found {len(vid_logs)} logs. Extracting unique frames...")
         
         cap = cv2.VideoCapture(vid_path)
         
@@ -56,7 +60,6 @@ def extract_exact_reality_frames():
             # The Math: Find the exact millisecond offset from the start of the video
             delta_ms = (log_time - vid_start).total_seconds() * 1000.0
             
-            # If the log is somehow before the video started, skip it
             if delta_ms < 0:
                 continue
                 
@@ -70,9 +73,12 @@ def extract_exact_reality_frames():
                 # The Pore Logic: Check the diameter column
                 label = "pore" if row['pore_diameter'] > 0 else "normal"
                 
-                # The Naming: European format YYYY-MM-DD HH-MM-SS,mmm
-                safe_time = log_time.strftime("%Y-%m-%d %H-%M-%S,%f")[:-3]
-                filename = f"{safe_time}_{label}.jpg"
+                # The Naming: Grab the raw cell text and trick Windows with the Unicode colon
+                raw_text = row['Raw_Cell_Value']
+                safe_raw_text = raw_text.replace(':', '：') 
+                
+                # Combine the exact text with the label
+                filename = f"{safe_raw_text}_{label}.jpg"
                 
                 # Save the image
                 cv2.imwrite(os.path.join(output_dir, filename), frame)
