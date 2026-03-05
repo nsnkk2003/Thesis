@@ -1,0 +1,35 @@
+import cv2
+
+video_path = "video.webm"
+
+cap = cv2.VideoCapture(video_path)
+
+fps = cap.get(cv2.CAP_PROP_FPS)
+total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+cv2.namedWindow("Player")
+
+def seek(val):
+    cap.set(cv2.CAP_PROP_POS_FRAMES, val)
+
+cv2.createTrackbar("Position", "Player", 0, total_frames - 1, seek)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    current = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+    cv2.setTrackbarPos("Position", "Player", current)
+
+    cv2.imshow("Player", frame)
+
+    key = cv2.waitKey(int(1000 / fps)) & 0xFF
+
+    if key == 27:  # ESC to quit
+        break
+    elif key == ord('p'):  # pause
+        cv2.waitKey(-1)
+
+cap.release()
+cv2.destroyAllWindows()
