@@ -2,7 +2,7 @@ import cv2
 import pandas as pd
 import os
 
-def extract_exact_reality_frames():
+def extract_jump_the_difference():
     # --- 1. YOUR EXACT INPUTS ---
     xlsx_path = "Annom_WorkObject4.xlsx"
     output_dir = "workobject4_frames"  
@@ -32,9 +32,11 @@ def extract_exact_reality_frames():
 
     print(f"Loading logs from {xlsx_path}...")
     df = pd.read_excel(xlsx_path)
-    
     df['Time'] = df['Time'].astype(str).str.replace(',', '.')
     df['Time'] = pd.to_datetime(df['Time'])
+    
+    # Sort just to guarantee we are strictly moving forward
+    df = df.sort_values(by='Time') 
     
     os.makedirs(output_dir, exist_ok=True)
     total_extracted = 0
@@ -44,45 +46,64 @@ def extract_exact_reality_frames():
         vid_path = vid['path']
         vid_start = vid['start']
         
-        # --- THE NEW DYNAMIC WINDOW LOGIC ---
+        # Dynamic window: safely assign logs to the correct video
         if i < len(videos_info) - 1:
-            # If it is NOT the last video, grab logs between this video and the NEXT video
             next_vid_start = videos_info[i+1]['start']
             vid_logs = df[(df['Time'] >= vid_start) & (df['Time'] < next_vid_start)]
         else:
-            # If it IS the last video, just grab everything from here to the end of the sheet
             vid_logs = df[df['Time'] >= vid_start]
 
         if vid_logs.empty:
-            print(f"No logs found for {os.path.basename(vid_path)}. Skipping...")
             continue
 
         print(f"\n--- Opening Video {i+1}: {os.path.basename(vid_path)} ---")
-        print(f"Assigned {len(vid_logs)} logs to this video. Extracting unique frames...")
+        print(f"Assigned {len(vid_logs)} logs. Jumping the differences forward...")
         
         cap = cv2.VideoCapture(vid_path)
         
-        # --- 3. THE JUMP AND GRAB ---
+        # We start our timer at the exact moment the video begins
+        previous_log_time = vid_start 
+        
+        # --- 3. THE "JUMP THE DIFFERENCE" LOGIC ---
         for index, row in vid_logs.iterrows():
-            log_time = row['Time']
-            delta_ms = (log_time - vid_start).total_seconds() * 1000.0
+            current_log_time = row['Time']
             
-            if delta_ms < 0:
+            # 1. Calculate the exact difference between the last log and this log
+            jump_difference_ms = (current_log_time - previous_log_time).total_seconds() * 1000.0
+            
+            # We calculate the absolute target to prevent micro-drifts in the math
+            target_ms = (current_log_time - vid_start).total_seconds() * 1000.0
+            
+            if target_ms < 0:
                 continue
-                
-            cap.set(cv2.CAP_PROP_POS_MSEC, delta_ms)
-            ret, frame = cap.read()
             
-            if ret:
-                label = "pore" if row['pore_diameter'] > 0 else "normal"
-                safe_time = log_time.strftime("%Y-%m-%d %H-%M-%S,%f")[:-3]
-                filename = f"{safe_time}_{label}.jpg"
+            # 2. Fast-forward exactly that difference
+            while True:
+                current_ms = cap.get(cv2.CAP_PROP_POS_MSEC)
                 
-                cv2.imwrite(os.path.join(output_dir, filename), frame)
-                total_extracted += 1
+                # Did our fast-forward cross the gap?
+                if current_ms >= target_ms:
+                    # Boom. Decode the real picture.
+                    ret, frame = cap.retrieve()
+                    if ret:
+                        label = "pore" if row['pore_diameter'] > 0 else "normal"
+                        safe_time = current_log_time.strftime("%Y-%m-%d %H-%M-%S,%f")[:-3]
+                        filename = f"{safe_time}_{label}.jpg"
+                        
+                        cv2.imwrite(os.path.join(output_dir, filename), frame)
+                        total_extracted += 1
+                        
+                    # Update our anchor to this log so we can calculate the NEXT difference
+                    previous_log_time = current_log_time 
+                    break 
+                
+                # 3. If we haven't crossed the gap yet, jump forward silently without decoding
+                ret = cap.grab()
+                if not ret:
+                    break # Video ended
 
         cap.release()
 
-    print(f"\nBoom! Finished. Saved {total_extracted} unique frames to the '{output_dir}' folder.")
+    print(f"\nBoom! Finished. Saved {total_extracted} unique frames perfectly matched to reality.")
 
-extract_exact_reality_frames()
+extract_jump_the_difference()
