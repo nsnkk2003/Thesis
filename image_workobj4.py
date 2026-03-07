@@ -21,12 +21,12 @@ def extract_jump_the_difference():
             "start": pd.to_datetime("2024-05-22 10:17:26.215")
         },
         {
-            "path": "20240522-131943132767.webm",
+            "path": "video_data/20240522-131943132767.webm",
             "start": pd.to_datetime("2024-05-22 13:19:43.132")
         },
         {
             "path": "video_data/reassembled_22.webm",
-            "start": pd.to_datetime("2024-05-29 14:00:51.439")
+            "start": pd.to_datetime("2024-05-22 14:00:51.439")
         }
     ]
 
@@ -88,7 +88,7 @@ def extract_jump_the_difference():
                     if ret:
                         label = "pore" if row['pore_diameter'] > 0 else "normal"
                         safe_time = current_log_time.strftime("%Y-%m-%d %H-%M-%S,%f")[:-3]
-                        filename = f"{safe_time}_{label}.jpg"
+                        filename = f"{safe_time}_{label}_{index}.jpg"
                         
                         cv2.imwrite(os.path.join(output_dir, filename), frame)
                         total_extracted += 1
