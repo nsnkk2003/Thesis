@@ -2,13 +2,11 @@ import pandas as pd
 
 def get_parameter_ranges(file_path, sheet_name=0, ignore_cols=None):
     """
-    Reads an Excel file and returns the parameter names and their value ranges,
-    ignoring specified columns and timestamps.
+    Reads an Excel file, calculates ranges, and ignores specified columns.
     """
     if ignore_cols is None:
         ignore_cols = []
 
-    # Read the Excel file
     try:
         df = pd.read_excel(file_path, sheet_name=sheet_name)
     except FileNotFoundError:
@@ -18,63 +16,52 @@ def get_parameter_ranges(file_path, sheet_name=0, ignore_cols=None):
 
     results = []
 
-    # Loop through each column (parameter)
     for column in df.columns:
-        # 1. Skip columns explicitly mentioned in the ignore_cols list
         if column in ignore_cols:
             continue
 
-        # Drop empty rows for the current column to get accurate ranges
         col_data = df[column].dropna()
         
         if col_data.empty:
-            results.append({
-                "Parameter Name": column, 
-                "Range of Values": "Empty column"
-            })
+            results.append({"Parameter Name": column, "Range of Values": "Empty column"})
             continue
 
-        # 2. Automatically skip datetime/timestamp columns
         if pd.api.types.is_datetime64_any_dtype(col_data):
             continue
 
-        # Check if the column contains numerical data
         if pd.api.types.is_numeric_dtype(col_data):
             min_val = col_data.min()
             max_val = col_data.max()
-            results.append({
-                "Parameter Name": column, 
-                "Range of Values": f"{min_val} to {max_val}"
-            })
-        # Handle text/categorical data
+            results.append({"Parameter Name": column, "Range of Values": f"{min_val} to {max_val}"})
         else:
             unique_vals = col_data.unique()
             if len(unique_vals) <= 5:
                 vals_str = ", ".join(map(str, unique_vals))
-                results.append({
-                    "Parameter Name": column, 
-                    "Range of Values": f"Text (Values: {vals_str})"
-                })
+                results.append({"Parameter Name": column, "Range of Values": f"Text (Values: {vals_str})"})
             else:
-                results.append({
-                    "Parameter Name": column, 
-                    "Range of Values": f"Text ({len(unique_vals)} unique values)"
-                })
+                results.append({"Parameter Name": column, "Range of Values": f"Text ({len(unique_vals)} unique values)"})
 
-    # Convert results into a neat DataFrame for easy viewing
     return pd.DataFrame(results)
 
 # --- How to use it ---
 if __name__ == "__main__":
-    excel_file = 'your_data_file.xlsx' 
+    # 1. Your input file
+    input_file = 'your_data_file.xlsx' 
     
-    # Put the exact names of your two timestamp columns here
+    # 2. Your output file name
+    output_file = 'parameter_summary.xlsx'
+    
+    # 3. Columns to ignore (your timestamps)
     columns_to_ignore = ['Timestamp1', 'Timestamp2'] 
     
-    print("Analyzing data...\n")
-    output = get_parameter_ranges(excel_file, ignore_cols=columns_to_ignore)
+    print(f"Analyzing data from {input_file}...")
+    output_df = get_parameter_ranges(input_file, ignore_cols=columns_to_ignore)
     
-    if isinstance(output, pd.DataFrame):
-        print(output.to_string(index=False))
+    # Check if we got a DataFrame back (meaning no errors)
+    if isinstance(output_df, pd.DataFrame):
+        # Export to Excel without the row numbers (index=False)
+        output_df.to_excel(output_file, index=False)
+        print(f"\nSuccess! Summary successfully saved to '{output_file}'.")
     else:
-        print(output)
+        # Print the error message if something went wrong
+        print(output_df)
