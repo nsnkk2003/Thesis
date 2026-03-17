@@ -1,1 +1,10 @@
 python -c "from minio import Minio; c = Minio('minio.dev01.k8s.aeroes.internal', access_key='YOUR_KEY', secret_key='YOUR_SECRET', secure=True); print([b.name for b in c.list_buckets()])"
+
+
+Hi [Supervisor’s name],
+I’m setting up the fine-tuning pipeline and wanted to clarify one thing before I proceed — how should I handle the base model (Llama 3.2 Vision 11B from HuggingFace)?
+Specifically:
+	1.	Does our Kubernetes/ArgoCD environment allow outbound internet access to HuggingFace, so the training job can pull the model directly at runtime?
+	2.	Or do I need to download it manually and store it in MinIO beforehand?
+	3.	If it’s the latter, is it okay for me to download it on my laptop and upload it to MinIO from there, or is there a preferred way to do this?
+Just want to make sure I set this up the right way. Thanks!
