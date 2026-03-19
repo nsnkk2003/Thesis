@@ -1,31 +1,3 @@
 python -c "from minio import Minio; c = Minio('minio.dev01.k8s.aeroes.internal', access_key='YOUR_KEY', secret_key='YOUR_SECRET', secure=True); print([b.name for b in c.list_buckets()])"
 
 
-    Hi Erik,
-
-I've pushed the training pipeline code to GitLab: noisy-data-llm/wire-ded-llm
-
-Could you help me deploy it on the A6000 machine when you get a chance? 
-
-I believe the steps would be:
-
-1. Clone the repo and build the Docker image:
-   git clone https://gitlab.int.gknaerospace.com/noisy-data-llm/wire-ded-llm.git
-   cd wire-ded-llm
-   docker build -t wire-ded-training .
-
-2. Run with GPU access and MinIO credentials:
-   docker run --gpus all \
-     -e MINIO_ENDPOINT=minio.dev01.k8s.aeroes.internal \
-     -e MINIO_ACCESS_KEY=<minio_username> \
-     -e MINIO_SECRET_KEY=<minio_password> \
-     wire-ded-training
-
-It should connect to MinIO, download the LLaVA-NeXT model 
-from HuggingFace (~15GB first time), fine-tune it on our 
-Wire DED data, and save results back to MinIO.
-
-Please let me know if I need to change anything in the setup, 
-or if there's a different way you'd prefer to deploy it.
-
-Thanks for the help!
