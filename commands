@@ -1,6 +1,10 @@
 python -c "from minio import Minio; c = Minio('minio.dev01.k8s.aeroes.internal', access_key='YOUR_KEY', secret_key='YOUR_SECRET', secure=True); print([b.name for b in c.list_buckets()])"
 
 
-C:\Users\yy57328\Downloads\wire-ded-llm>git push -u origin main
-error: src refspec main does not match any
-error: failed to push some refs to 'https://gitlab.int.gknaerospace.com/noisy-data-llm/wire-ded-llm.git'
+      $ docker build -t $CI_REGISTRY_IMAGE:latest .
+ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+Cleaning up project directory and file based variables
+
+
+ERROR: Job failed: command terminated with exit code 1
