@@ -1,0 +1,19 @@
+# MinIO credentials are in config.yaml — never push this to Git
+src/config.yaml
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Training output (large files, saved to MinIO instead)
+output/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp

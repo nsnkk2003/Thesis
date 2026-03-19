@@ -16,18 +16,40 @@ from datetime import datetime
 
 
 def load_config(config_path="src/config.yaml"):
-    """Load configuration from YAML file."""
+    """
+    Load configuration from YAML file.
+    Falls back to config.template.yaml if config.yaml doesn't exist
+    (on the cluster, credentials come from environment variables instead).
+    """
+    if not os.path.exists(config_path):
+        template_path = config_path.replace("config.yaml", "config.template.yaml")
+        if os.path.exists(template_path):
+            print(f"  config.yaml not found, using {template_path}")
+            print(f"  Credentials will be read from environment variables.")
+            config_path = template_path
+        else:
+            raise FileNotFoundError(f"Neither {config_path} nor {template_path} found!")
+
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def get_minio_client(config):
-    """Create and return a MinIO client."""
+    """
+    Create and return a MinIO client.
+    Reads credentials from environment variables first (for Kubernetes),
+    falls back to config.yaml values (for local testing).
+    """
+    endpoint = os.environ.get("MINIO_ENDPOINT", config["minio"]["endpoint"])
+    access_key = os.environ.get("MINIO_ACCESS_KEY", config["minio"]["access_key"])
+    secret_key = os.environ.get("MINIO_SECRET_KEY", config["minio"]["secret_key"])
+    secure = config["minio"]["secure"]
+
     return Minio(
-        endpoint=config["minio"]["endpoint"],
-        access_key=config["minio"]["access_key"],
-        secret_key=config["minio"]["secret_key"],
-        secure=config["minio"]["secure"],
+        endpoint=endpoint,
+        access_key=access_key,
+        secret_key=secret_key,
+        secure=secure,
     )
 
 

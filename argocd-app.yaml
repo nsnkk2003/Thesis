@@ -1,0 +1,28 @@
+# argocd-app.yaml
+# Tells ArgoCD: watch my GitLab repo and deploy when it changes
+# FILL IN the placeholders marked with <...> before deploying
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wire-ded-training
+  namespace: argocd                  # ArgoCD's own namespace (usually "argocd")
+spec:
+  project: default
+
+  # Where to find the code
+  source:
+    repoURL: <YOUR_GITLAB_REPO_URL>          # e.g., https://gitlab.your-company.com/your-group/wire-ded-llm.git
+    targetRevision: main                      # Which branch to watch
+    path: k8s                                 # Folder containing deployment.yaml
+
+  # Where to deploy
+  destination:
+    server: https://kubernetes.default.svc    # Usually this default value
+    namespace: <YOUR_NAMESPACE>               # Same namespace as deployment.yaml
+
+  # Auto-sync: deploy automatically when you push to main
+  syncPolicy:
+    automated:
+      prune: true          # Remove old resources when you delete them from Git
+      selfHeal: true       # If someone manually changes something, revert to Git state

@@ -1,0 +1,109 @@
+# ============================================
+# Wire DED Defect Detection - Configuration
+# ============================================
+# COPY this file to config.yaml and fill in your credentials:
+#   cp config.template.yaml config.yaml
+
+# --- MinIO (S3) Settings ---
+minio:
+  endpoint: "minio.dev01.k8s.aeroes.internal"
+  access_key: "REPLACE_WITH_YOUR_KEY"
+  secret_key: "REPLACE_WITH_YOUR_SECRET"
+  secure: true
+  bucket: "am-data"
+
+# --- Data Paths (inside MinIO bucket) ---
+# 10 work objects total (no WorkObject8)
+# Listed in order — index 0 to 9
+data:
+  excel_files:
+    - "WorkObject1.xlsx"     # index 0
+    - "WorkObject2.xlsx"     # index 1
+    - "WorkObject3.xlsx"     # index 2
+    - "WorkObject4.xlsx"     # index 3
+    - "WorkObject5.xlsx"     # index 4
+    - "WorkObject6.xlsx"     # index 5
+    - "WorkObject7.xlsx"     # index 6
+    - "WorkObject9.xlsx"     # index 7
+    - "WorkObject10.xlsx"    # index 8
+    - "WorkObject11.xlsx"    # index 9
+
+  frame_folders:
+    - "workobject1_frames"   # index 0
+    - "workobject2_frames"   # index 1
+    - "workobject3_frames"   # index 2
+    - "workobject4_frames"   # index 3
+    - "workobject5_frames"   # index 4
+    - "workobject6_frames"   # index 5
+    - "workobject7_frames"   # index 6
+    - "workobject9_frames"   # index 7
+    - "workobject10_frames"  # index 8
+    - "workobject11_frames"  # index 9
+
+  # Columns to use as input features
+  input_columns:
+    - "Layer"
+    - "Bead"
+    - "Current"
+    - "Wire Feed Speed"
+    - "Throughput_Speed"
+    - "Laser Output Power"
+    - "Pyrometer1_Low"
+    - "Pyrometer2_Mid"
+    - "Pyrometer3_High"
+    - "AI_LaserVoltage"
+    - "Robot_DepositionWire_Speed"
+    - "Conductance"
+    - "Power_Wire"
+
+  # Label column
+  label_column: "pore_diameter"
+
+  # Timestamp column name
+  timestamp_column: "Time"
+
+# --- Data Split (by index in the lists above) ---
+# Train: WorkObject 1-7 (indices 0-6)
+# Test:  WorkObject 9, 10, 11 (indices 7-9)
+split:
+  train_objects: [0, 1, 2, 3, 4, 5, 6]
+  test_objects: [7, 8, 9]
+
+# --- Model Settings ---
+model:
+  name: "llava-hf/llava-v1.6-mistral-7b-hf"
+  quantization: "4bit"
+
+# --- LoRA Settings ---
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.1
+  target_modules:
+    - "q_proj"
+    - "v_proj"
+    - "k_proj"
+    - "o_proj"
+
+# --- Training Settings ---
+training:
+  epochs: 3
+  batch_size: 4
+  learning_rate: 0.0002
+  warmup_ratio: 0.1
+  max_length: 512
+  output_dir: "./output"
+  save_to_minio: true
+
+# --- Augmentation Settings ---
+augmentation:
+  enabled: true
+  sensor_noise_percent: 0.02
+  image_rotation_degrees: 10
+  image_brightness_range: [0.9, 1.1]
+  oversample_defects: true
+
+# --- Class Weighting ---
+class_weight:
+  normal: 1.0
+  defect: 50.0
