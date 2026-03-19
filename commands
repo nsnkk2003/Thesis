@@ -1,15 +1,6 @@
 python -c "from minio import Minio; c = Minio('minio.dev01.k8s.aeroes.internal', access_key='YOUR_KEY', secret_key='YOUR_SECRET', secure=True); print([b.name for b in c.list_buckets()])"
 
 
-Hi Erik,
-
-I'm setting up the fine-tuning pipeline and need a few things:
-
-1. Can you create a GitLab repo called "wire-ded-llm" for me, 
-   or tell me which group I should create it under?
-2. What K8s namespace should I deploy to?
-3. What GPU type is available on the cluster (A100, V100, T4, etc.) 
-   and how much VRAM does it have?
-4. What is the GitLab container registry URL?
-
-Thanks!
+C:\Users\yy57328\Downloads\wire-ded-llm>git push -u origin main
+error: src refspec main does not match any
+error: failed to push some refs to 'https://gitlab.int.gknaerospace.com/noisy-data-llm/wire-ded-llm.git'
