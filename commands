@@ -1,10 +1,10 @@
 python -c "from minio import Minio; c = Minio('minio.dev01.k8s.aeroes.internal', access_key='YOUR_KEY', secret_key='YOUR_SECRET', secure=True); print([b.name for b in c.list_buckets()])"
 
 
-      $ docker build -t $CI_REGISTRY_IMAGE:latest .
-ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-
+         INFO[0001] Building stage 'nvidia/cuda:12.1.1-devel-ubuntu22.04' [idx: '0', base-idx: '-1'] 
+INFO[0001] Unpacking rootfs as cmd RUN apt-get update && apt-get install -y     python3.10     python3-pip     git     && rm -rf /var/lib/apt/lists/* requires it. 
+WARNING: Event retrieved from the cluster: Container build exceeded its local ephemeral storage limit "2560Mi". 
 Cleaning up project directory and file based variables
+WARNING: Event retrieved from the cluster: Container build exceeded its local ephemeral storage limit "2560Mi". 
 
-
-ERROR: Job failed: command terminated with exit code 1
+ERROR: Job failed (system failure): pod "runner-ruaj5dmuj-project-563-concurrent-0-i4lvzanm" status is "Failed"
