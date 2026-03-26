@@ -1,11 +1,117 @@
 python -c "from minio import Minio; c = Minio('minio.dev01.k8s.aeroes.internal', access_key='YOUR_KEY', secret_key='YOUR_SECRET', secure=True); print([b.name for b in c.list_buckets()])"
 
-Hi Erik,
 
-Apologies for the delayed response — I’ve been occupied with a move to Gothenburg.
+(myenv) C:\Users\yy57328\Downloads\Final_Data_100326>python fix_columns.py "C:\Users\yy57328\Downloads\Final_Data_100326"
+============================================================
+STEP 1: Checking columns in each Excel file
+============================================================
 
-Thank you very much for getting it running. I noticed there are some data matching issues (only a few rows matched with images), so I’ll review and fix this on my end and update the code in GitLab.
+Annom_WorkObject1.xlsx:
+  Columns (36): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'PoreInfo', 'Pore_Uncert', 'distance', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Time1']
 
-May I kindly request you to run it again once I push the update?
+Annom_WorkObject10.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
 
-Also, thank you for resolving the CUDA 12.4 compatibility issue — I really appreciate it.
+Annom_WorkObject11.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject2.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'PoreInfo', 'Pore_Uncert', 'distance', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject3.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'Type', 'AI_ProcadaCurrent', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject4.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject5.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject6.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'Type', 'AI_ProcadaCurrent', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject7.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject9.xlsx:
+  Columns (37): ['Unnamed: 0.1', 'Unnamed: 0', 'Time', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Layer', 'Bead', 'Type', 'AI_ProcadaCurrent', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'PoreInfo', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_diameter', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+============================================================
+STEP 2: Comparing columns across files
+============================================================
+
+Annom_WorkObject1.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'Pore_Uncert', 'distance', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Time1']
+
+Annom_WorkObject10.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject11.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject2.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'Pore_Uncert', 'distance', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject3.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Type', 'AI_ProcadaCurrent', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject4.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject5.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject6.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Type', 'AI_ProcadaCurrent', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject7.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'AI_ProcadaCurrent', 'Type', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+Annom_WorkObject9.xlsx:
+  MISSING: ['Current', 'Wire Feed Speed', 'Throughput_Speed', 'Laser Output Power', 'Pyrometer1_Low', 'Pyrometer2_Mid', 'Pyrometer3_High', 'AI_LaserVoltage', 'Robot_DepositionWire_Speed', 'Conductance', 'Power_Wire']
+  EXTRA (might be renamed versions): ['Unnamed: 0.1', 'Unnamed: 0', 'X', 'Y', 'Z', 'Z_Adjust', 'q1', 'q2', 'q3', 'q4', 'Type', 'AI_ProcadaCurrent', 'Wire_Speed', 'TCP_Speed', 'Laser_Power', 'Pyro_1_Low', 'Pyro_2_Mid', 'Pyro_3_High', 'AI_ProcadaVoltage', 'Robot_Wire_Speed', 'Actual_Conductance', 'Actual_Power_HotWire', 'distance', 'Pore_Uncert', 'Comment', 'CT_coords', 'pore_score', 'pore_score_uncert', 'pore_score_int', 'pore_class_uncert', 'Unnamed: 35', 'Time1']
+
+============================================================
+STEP 3: Checking timestamp format
+============================================================
+
+Annom_WorkObject1.xlsx:
+  First timestamp: '2024-05-20 08:22:58.996000' (type: Timestamp)
+
+Annom_WorkObject10.xlsx:
+  First timestamp: '2024-05-30 08:59:18.257000' (type: Timestamp)
+
+Annom_WorkObject11.xlsx:
+  First timestamp: '2024-05-30 09:00:14.079000' (type: Timestamp)
+
+Annom_WorkObject2.xlsx:
+  First timestamp: '2024-05-20 08:23:57.646000' (type: Timestamp)
+
+Annom_WorkObject3.xlsx:
+  First timestamp: '2024-05-20 08:24:56.400000' (type: Timestamp)
+
+Annom_WorkObject4.xlsx:
+  First timestamp: '2024-05-21 16:06:29.305000' (type: Timestamp)
+
+Annom_WorkObject5.xlsx:
+  First timestamp: '2024-05-21 16:07:42.641000' (type: Timestamp)
+
+Annom_WorkObject6.xlsx:
+  First timestamp: '2024-05-21 16:08:38.400000' (type: Timestamp)
+
+Annom_WorkObject7.xlsx:
+  First timestamp: '2024-05-29 08:32:03.635000' (type: Timestamp)
+
+Annom_WorkObject9.xlsx:
+  First timestamp: '2024-05-29 08:33:57.199000' (type: Timestamp)
+
+(myenv) C:\Users\yy57328\Downloads\Final_Data_100326>
