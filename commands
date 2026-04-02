@@ -62,3 +62,21 @@ python src/test_speed.py
 
 This will help us find the fastest safe settings before 
 committing to another full run. Thank you!
+
+
+
+Hi Erik,
+
+I've pushed an optimization — images are now resized to 
+336x336 before processing, which drops token count from 
+3117 to 1365. max_length is now 1536.
+
+I also fixed the test script. Could you please run the 
+test first to verify the speedup?
+
+python src/test_speed.py
+
+If it looks good, we can stop the current run and restart 
+with the new settings. Should be ~2-3x faster.
+
+Thank you!
