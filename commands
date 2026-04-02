@@ -43,3 +43,22 @@ These two changes should bring training time down from ~18 days to around 4-5 da
 
 Thank you,
 Kaushik
+
+
+Hi Erik,
+
+Thanks for the feedback on the token issue. I've added a test 
+script that checks different approaches with random data — 
+no need to run the full training.
+
+It tests:
+1. How many tokens different image sizes produce
+2. Training speed at different settings (10 steps only, ~5 min)
+3. Estimates full training time for each setting
+
+Could you run it when you get a chance?
+
+python src/test_speed.py
+
+This will help us find the fastest safe settings before 
+committing to another full run. Thank you!
