@@ -1,169 +1,45 @@
-==================================================
-Wire DED Defect Detection - Fine-Tuning
-==================================================
-  config.yaml not found, using src/config.template.yaml
-  Credentials will be read from environment variables.
+Hi Erik,
 
-Model: llava-hf/llava-v1.6-mistral-7b-hf
-LoRA r=16, alpha=32
-Epochs: 3
-Batch size: 4
+Could you please make two small changes and rebuild?
 
---- Loading data from MinIO ---
-✓ Using custom CA certificate: src/certificate.crt
-Loading WorkObject 1: WorkObject1.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-20 08:22:58.996000' -> '2024-                                                                                                             05-20 08-22-58,996'
-  Frames found: 15738
-  Skipped 16057 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
-Loading WorkObject 2: WorkObject2.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-20 08:23:57.646000' -> '2024-                                                                                                             05-20 08-23-57,646'
-  Frames found: 15651
-  Skipped 15953 rows (no matching image or unparseable timestamp)
-  -> 2 matched rows (2 normal, 0 defect)
-Loading WorkObject 3: WorkObject3.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-20 08:24:56.400000' -> '2024-                                                                                                             05-20 08-24-56,400'
-  Frames found: 15965
-  Skipped 16175 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
-Loading WorkObject 4: WorkObject4.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-21 16:06:29.305000' -> '2024-                                                                                                             05-21 16-06-29,305'
-  Frames found: 16542
-  Skipped 16646 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
-Loading WorkObject 5: WorkObject5.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-21 16:07:42.641000' -> '2024-                                                                                                             05-21 16-07-42,641'
-  Frames found: 16754
-  Skipped 16780 rows (no matching image or unparseable timestamp)
-  -> 2 matched rows (2 normal, 0 defect)
-Loading WorkObject 6: WorkObject6.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-21 16:08:38.400000' -> '2024-                                                                                                             05-21 16-08-38,400'
-  Frames found: 16444
-  Skipped 16547 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
-Loading WorkObject 7: WorkObject7.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-29 08:32:03.635000' -> '2024-                                                                                                             05-29 08-32-03,635'
-  Frames found: 16730
-  Skipped 16831 rows (no matching image or unparseable timestamp)
-  -> 2 matched rows (2 normal, 0 defect)
-Loading WorkObject 8: WorkObject9.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-29 08:33:57.199000' -> '2024-                                                                                                             05-29 08-33-57,199'
-  Frames found: 16679
-  Skipped 16678 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
-Loading WorkObject 9: WorkObject10.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-30 08:59:18.257000' -> '2024-                                                                                                             05-30 08-59-18,257'
-  Frames found: 16697
-  Skipped 16895 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
-Loading WorkObject 10: WorkObject11.xlsx...
-  Timestamp format auto-detected. Sample: '2024-05-30 09:00:14.079000' -> '2024-                                                                                                             05-30 09-00-14,079'
-  Frames found: 16306
-  Skipped 16307 rows (no matching image or unparseable timestamp)
-  -> 1 matched rows (1 normal, 0 defect)
+---
 
-Total train: 10 (0 defects)
-Total test:  3 (0 defects)
+1. In data_loader.py, change this section in __getitem__:
 
---- Loading processor ---
+        # Step 1: Download image from MinIO
+        image = load_image_from_minio(self.minio_client, self.bucket, item["image_path"])
 
---- Loading model (4-bit quantized) ---
-Fetching 4 files: 100%|██████████| 4/4 [02:31<00:00, 37.98s/it]
-Loading weights: 100%|██████████| 687/687 [00:04<00:00, 163.51it/s]
-warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` inste                                                                                                             ad.
-[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum                                                                                                              of 5.5.0; this can cause the process to hang. It is recommended to upgrade the k                                                                                                             ernel to the minimum version or higher.
-  0%|          | 0/3 [00:00<?, ?it/s]
---- Attaching LoRA adapters ---
-trainable params: 15,990,784 || all params: 7,582,738,432 || trainable%: 0.2109
+        # Step 2: Apply augmentation if this is a defect AND augmentation is enabled
+        if self.augment and item["label"] == 1:
+            image = self.defect_transform(image)
 
---- Creating datasets ---
-✓ Using custom CA certificate: src/certificate.crt
-WARNING: No defect samples found in data!
-Training dataset size: 10
+To:
 
---- Setting up training ---
+        # Step 1: Download image from MinIO
+        image = load_image_from_minio(self.minio_client, self.bucket, item["image_path"])
 
---- Starting training ---
-Total training examples: 10
-Effective batch size: 4 x 4 (gradient accumulation) = 16
-Class weights: normal=1.0, defect=50.0
+        # Step 1.5: Resize to 336x336 to prevent AnyRes multi-patch splitting
+        # This reduces image tokens from ~2880 to ~576, making training 3-4x faster
+        # Melt pool defect patterns are visible at this resolution
+        image = image.resize((336, 336))
 
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-33%|███▎      | 1/3 [00:37<01:15, 37.61s/it]Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-67%|██████▋   | 2/3 [01:15<00:37, 37.99s/it]Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-Max length is: 3200
-LENGTH: torch.Size([1, 3200])
-100%|██████████| 3/3 [01:55<00:00, 38.36s/it]
-{'train_runtime': '115.1', 'train_samples_per_second': '0.261', 'train_steps_per                                                                                                             _second': '0.026', 'train_loss': '19.26', 'epoch': '3'}
+        # Step 2: Apply augmentation if this is a defect AND augmentation is enabled
+        if self.augment and item["label"] == 1:
+            image = self.defect_transform(image)
 
---- Saving LoRA adapter ---
-Adapter saved to ./output/lora_adapter
+---
 
---- Uploading adapter to MinIO ---
-  Uploaded: trained_adapters/lora_adapter/README.md
-  Uploaded: trained_adapters/lora_adapter/adapter_model.safetensors
-  Uploaded: trained_adapters/lora_adapter/adapter_config.json
-  Uploaded: trained_adapters/lora_adapter/chat_template.jinja
-  Uploaded: trained_adapters/lora_adapter/tokenizer_config.json
-  Uploaded: trained_adapters/lora_adapter/tokenizer.json
-  Uploaded: trained_adapters/lora_adapter/processor_config.json
-  All adapter files uploaded to MinIO: trained_adapters/lora_adapter/
+2. In config.yaml and config.template.yaml, change:
 
---- Training complete! ---
- Hi Erik, apologies for the delayed response — I was moving to Gothenburg and have settled in now. Thanks for the clarification, I understand the setup. I’ll enable timestamps and continue monitoring the training.
+        max_length: 2800
 
+To:
+
+        max_length: 1024
+
+---
+
+These two changes should bring training time down from ~18 days to around 4-5 days.
+
+Thank you,
+Kaushik
