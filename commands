@@ -1,37 +1,19 @@
-# ============================================
-# 4. MINIO CHECKPOINT CALLBACK
-# ============================================
-class MinIOCheckpointCallback(TrainerCallback):
-    """
-    Automatically uploads checkpoint folders to MinIO after each save.
-    This way, if the container is stopped mid-training, we can resume
-    from MinIO later without losing progress.
-    """
+Hi Erik,
 
-    def __init__(self, minio_client, bucket, minio_prefix="trained_adapters/checkpoints"):
-        self.minio_client = minio_client
-        self.bucket = bucket
-        self.minio_prefix = minio_prefix
+I've pushed the updated code. Two improvements:
 
-    def on_save(self, args, state, control, **kwargs):
-        """Called by the Trainer after every checkpoint save."""
-        checkpoint_name = f"checkpoint-{state.global_step}"
-        local_checkpoint_dir = os.path.join(args.output_dir, checkpoint_name)
+1. Checkpoints now automatically upload to MinIO after each 
+   save — no more manual copying from the container.
 
-        if not os.path.exists(local_checkpoint_dir):
-            print(f"  WARNING: checkpoint folder not found at {local_checkpoint_dir}")
-            return
+2. On startup, the code checks MinIO for the latest checkpoint 
+   and automatically resumes from it.
 
-        print(f"\n--- Uploading {checkpoint_name} to MinIO ---")
-        uploaded = 0
-        for root, dirs, files in os.walk(local_checkpoint_dir):
-            for filename in files:
-                local_path = os.path.join(root, filename)
-                rel_path = os.path.relpath(local_path, local_checkpoint_dir)
-                minio_path = f"{self.minio_prefix}/{checkpoint_name}/{rel_path}"
-                try:
-                    self.minio_client.fput_object(self.bucket, minio_path, local_path)
-                    uploaded += 1
-                except Exception as e:
-                    print(f"  ERROR uploading {rel_path}: {e}")
-        print(f"  Uploaded {uploaded} files to {self.minio_prefix}/{checkpoint_name}/")
+I've already placed the epoch-1 checkpoint you shared into 
+MinIO at trained_adapters/checkpoints/checkpoint-8749/.
+
+So whenever you're free to restart the training, just run the 
+same docker command as before. The code will automatically 
+pick up from where we stopped and continue to epochs 2 and 3. 
+No manual steps on your side.
+
+Thank you so much for everything!
